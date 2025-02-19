@@ -108,7 +108,7 @@ done
 
 # Deliver to COMOUTpost
 if [ $SENDCOM = YES ]; then
-  ${FCP} ${INPdir}/${ocnout} ${COMOUTpost}/${ocnpost}
+  ncks --deflate=1 -O ${INPdir}/${ocnout} ${COMOUTpost}/${ocnpost}
 fi
 
 # Write out the ocnpostdone message file
@@ -136,7 +136,7 @@ oicout=oic_${YYYY}_${MM}_${DD}_${HH}.nc
 oicpost=${out_prefix}.${RUN}.mom6.f000.nc
 
 if [ $SENDCOM = YES ]; then
-  ${FCP} ${INPdir}/${oicout} ${COMOUTpost}/${oicpost}
+  ncks --deflate=1 -O ${INPdir}/${oicout} ${COMOUTpost}/${oicpost}
 fi
 
 cd ${DATA}
