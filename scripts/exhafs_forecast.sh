@@ -152,6 +152,7 @@ nstf_n3=${nstf_n3:-0}
 nstf_n4=${nstf_n4:-0}
 nstf_n5=${nstf_n5:-0}
 
+deflate_level=${deflate_level:-1}
 levp=${LEVS}
 
 # Set options for cold-start or warm-start
