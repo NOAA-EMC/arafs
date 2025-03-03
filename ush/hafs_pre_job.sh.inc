@@ -92,7 +92,7 @@ elif [[ -d /gpfs/f6 ]]; then
     ulimit -s unlimited
   elif [[ "$(hostname)" == "dtn"* ]]; then
     target="gaeac6dtn"
-    module use /sw/rdtn/modulefiles
+    module use /usw/hpss/modulefiles
     module load hsi
   fi
 elif [[ -d /lustre && -d /ncrc ]] ; then
