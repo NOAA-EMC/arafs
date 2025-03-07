@@ -11,8 +11,8 @@
   <!ENTITY QUEUE_SERVICE   "hpss">
   <!ENTITY CLUSTER_COMPUTE "<native>--clusters=c6</native>">
   <!ENTITY CLUSTER_DT      "<native>--clusters=es</native>">
-  <!ENTITY SERVICE         "<native>--partition=dtn_f5_f6</native>">
-  <!ENTITY SERVICE_EXTRA   "<native>--partition=dtn_f5_f6</native>">
+  <!ENTITY SERVICE         "<native>--partition=dtn_f5_f6 --constraint=f6</native>">
+  <!ENTITY SERVICE_EXTRA   "<native>--partition=dtn_f5_f6 --constraint=f6</native>">
   <!ENTITY CORES_EXTRA     "<nodesize>192</nodesize>">
   <!ENTITY NODES_EXTRA     "<nodesize>192</nodesize>">
   <!ENTITY RESERVATION     "">
