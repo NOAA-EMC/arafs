@@ -238,6 +238,12 @@ opts="-t -f"
 #./run_hafs.py ${opts} 2022121018-2022121218 29W HISTORY ${confopts} # Pakhar
 
 #===============================================================================
+ # 2024 NIO storms
+#./run_hafs.py ${opts} 2024052512-2024052700 01B HISTORY ${confopts} # Remal
+#./run_hafs.py ${opts} 2024083000-2024090200 02A HISTORY ${confopts} # Asna
+#./run_hafs.py ${opts} 2024102306-2024102518 03B HISTORY ${confopts} # Dana
+#./run_hafs.py ${opts} 2024112918-2024120312 04B HISTORY ${confopts} # Fengal
+
  # 2023 NIO storms
 #./run_hafs.py ${opts} 2023051018-2023051418 01B HISTORY ${confopts} # Mocha
 #./run_hafs.py ${opts} 2023060600-2023061612 02A HISTORY ${confopts} # Biparjoy
