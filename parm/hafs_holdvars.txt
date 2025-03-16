@@ -443,7 +443,6 @@ export ocn_tasks={ocn_tasks}
 export ocean_start_dtg={ocean_start_dtg}
 export merge_import={merge_import}
 export icplocn2atm={icplocn2atm}
-export epbl_mstar_scheme={epbl_mstar_scheme}
 
 export run_wave={run_wave}
 export wave_model={wave_model}
