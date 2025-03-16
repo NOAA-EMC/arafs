@@ -622,12 +622,7 @@ if [ ! -z "${RESTARTcom}" ] && [ $SENDCOM = YES ] && [ $FHR -lt 12 ] && [ -s ${I
   while [ $(( $(date +%s) - $(stat -c %Y ${INPdir}/RESTART/${coupler_res}) )) -lt 30 ]; do sleep 10s; done
   for file_res in $fv_core $fv_core_tile $fv_tracer_tile $fv_srf_wnd_tile $sfc_data $phy_data $coupler_res ; do
     if [ -s ${INPdir}/RESTART/${file_res} ] && [ ${INPdir}/RESTART/${file_res} -nt ${RESTARTcom}/${file_res} ]; then
-      if [[ "${file_res}" = *".nc" ]]; then
-        ncks --deflate=1 -O ${INPdir}/RESTART/${file_res} ${RESTARTcom}/${file_res}
-        export err=$?; err_chk
-      else
-        ${FCP} ${INPdir}/RESTART/${file_res} ${RESTARTcom}/${file_res}
-      fi
+      ${FCP} ${INPdir}/RESTART/${file_res} ${RESTARTcom}/${file_res}
     fi
   done
 fi
