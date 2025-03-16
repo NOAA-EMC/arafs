@@ -604,11 +604,6 @@ for nd in $(seq 1 ${nest_grids}); do
   export err=$?; err_chk
 done
 
-# Deliver to COMhafs
-if [ $SENDCOM = YES ] && [ ${FGAT_MODEL} = gfs ] && [ ${FGAT_HR} = 00 ] && [ -s ${DATA}/anl_storm/storm_txt ]; then
-  ${FCP} ${DATA}/anl_storm/storm_txt ${COMhafs}/${out_prefix}.${RUN}.storm_atm_vi
-fi
-
 #===============================================================================
 
 date

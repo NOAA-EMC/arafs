@@ -47,9 +47,6 @@ if [ ${RUN_ENVIR^^} != "NCO" ]; then
   if [ -s ${COMhafs}/${out_prefix}.${RUN}.trak.patcf ]; then
     ${NCP} -p ${COMhafs}/${out_prefix}.${RUN}.trak.patcf ${CDNOSCRUB}/${SUBEXPT}/.
   fi
-  if [ -s ${COMhafs}/${out_prefix}.${RUN}.storm_atm_vi ]; then
-    ${NCP} -p ${COMhafs}/${out_prefix}.${RUN}.storm_atm_vi ${CDNOSCRUB}/${SUBEXPT}/.
-  fi
 fi
 
 #===============================================================================
