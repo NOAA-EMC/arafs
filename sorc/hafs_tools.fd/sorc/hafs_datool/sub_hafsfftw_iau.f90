@@ -44,6 +44,7 @@
 
   integer            :: ix, jx, kx, tx, kxo
   real, allocatable, dimension(:,:,:,:) :: dat41, dat42, fdat_an, fdat_bg, fdat_incr, fdat_incru, fdat_incrv
+  real, allocatable, dimension(:,:,:,:) :: tmp4d
   real, allocatable, dimension(:,:,:,:) :: fdat_anu, fdat_anv, fdat_bgu, fdat_bgv
   real, allocatable, dimension(:,:)     :: cangu, sangu, cangv, sangv
   real, allocatable, dimension(:,:)     :: dat21, dat22, vr, vt, vtr, vrr
@@ -329,10 +330,30 @@
            deallocate(dat41, dat42)
         else  ! output to an incremental file
            if ( trim(varname) == 'u' ) then
+              allocate(tmp4d(1:ix,1:jx-1,1:kx,1))
+              do k = 1, kx
+              do j = 1, jx-1
+              do i = 1, ix
+                 tmp4d(i,j,k,1)=0.5*(fdat_incru(i,j,k,1)+fdat_incru(i,j+1,k,1))
+              enddo
+              enddo
+              enddo
+            ! call write_nc_real(trim(out_file),'u_inc',ix,jx-1,kx,-1,'nx','ny','nz','-', &
+            !                     0.5*(fdat_incru(1:ix,1:jx-1,1:kx,1)+fdat_incru(1:ix,2:jx,1:kx,1)),'m/s','u_inc')
               call write_nc_real(trim(out_file),'u_inc',ix,jx-1,kx,-1,'nx','ny','nz','-', &
-                                 0.5*(fdat_incru(1:ix,1:jx-1,1:kx,1)+fdat_incru(1:ix,2:jx,1:kx,1)),'m/s','u_inc')
+                                 tmp4d,'m/s','u_inc')
+              do k = 1, kx
+              do j = 1, jx-1
+              do i = 1, ix
+                 tmp4d(i,j,k,1)=0.5*(fdat_incrv(i,j,k,1)+fdat_incrv(i+1,j,k,1))
+              enddo
+              enddo
+              enddo
+             ! call write_nc_real(trim(out_file),'v_inc',ix,jx-1,kx,-1,'nx','ny','nz','-', &
+             !                    0.5*(fdat_incrv(1:ix,1:jx-1,1:kx,1)+fdat_incrv(2:ix+1,1:jx-1,1:kx,1)),'m/s','v_inc')
               call write_nc_real(trim(out_file),'v_inc',ix,jx-1,kx,-1,'nx','ny','nz','-', &
-                                 0.5*(fdat_incrv(1:ix,1:jx-1,1:kx,1)+fdat_incrv(2:ix+1,1:jx-1,1:kx,1)),'m/s','v_inc')
+                                 tmp4d,'m/s','v_inc')
+              deallocate(tmp4d)
            else
               call write_nc_real(trim(out_file),'ua_inc',ix,jx,kx,-1,'nx','ny','nz','-', fdat_incru,'m/s','ua_inc')
               call write_nc_real(trim(out_file),'va_inc',ix,jx,kx,-1,'nx','ny','nz','-', fdat_incrv,'m/s','ua_inc')

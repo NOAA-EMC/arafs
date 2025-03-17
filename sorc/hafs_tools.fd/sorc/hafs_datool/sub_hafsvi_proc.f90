@@ -2053,6 +2053,7 @@
 
   integer  :: i, j, k, n, flid, ncid, ndims, nrecord, iunit
   real, allocatable, dimension(:,:,:,:) :: dat4, dat41, dat42, dat43, dat44, phis1, phis2, sfcp1, sfcp2, u1, v1, u, v
+  real, allocatable, dimension(:,:,:,:) :: tmp4d
   real, allocatable, dimension(:,:,:)   :: dat3, dat31
   real, allocatable, dimension(:,:)     :: dat2, dat21
   real, allocatable, dimension(:)       :: dat1
@@ -2450,9 +2451,26 @@
            deallocate(dat42, dat43, dat4, dat41)
 
            !---update ua/va
-           call update_hafs_restart_par(trim(ncfile_core), 'ua', ix, iy, ke-ks+1, 1, 0.5*(u1(:,1:iy,1:ke-ks+1,1)+u1(:,2:iy+1,1:ke-ks+1,1)), 1, 1, ks, 1)
-           call update_hafs_restart_par(trim(ncfile_core), 'va', ix, iy, ke-ks+1, 1, 0.5*(v1(1:ix,:,1:ke-ks+1,1)+v1(2:ix+1,:,1:ke-ks+1,1)), 1, 1, ks, 1)
-
+           allocate(tmp4d(ix, iy, ke-ks+1, 1))
+           do k = 1, ke-ks+1
+           do j = 1, iy
+           do i = 1, ix
+              tmp4d(i,j,k,1) = 0.5*(u1(i,j,k,1)+u1(i,j+1,k,1))
+           enddo
+           enddo
+           enddo 
+         ! call update_hafs_restart_par(trim(ncfile_core), 'ua', ix, iy, ke-ks+1, 1, 0.5*(u1(:,1:iy,1:ke-ks+1,1)+u1(:,2:iy+1,1:ke-ks+1,1)), 1, 1, ks, 1)
+           call update_hafs_restart_par(trim(ncfile_core), 'ua', ix, iy, ke-ks+1, 1, tmp4d, 1, 1, ks, 1)
+           do k = 1, ke-ks+1
+           do j = 1, iy
+           do i = 1, ix
+              tmp4d(i,j,k,1) = 0.5*(v1(i,j,k,1)+v1(i+1,j,k,1))
+           enddo
+           enddo
+           enddo 
+         ! call update_hafs_restart_par(trim(ncfile_core), 'va', ix, iy, ke-ks+1, 1, 0.5*(v1(1:ix,:,1:ke-ks+1,1)+v1(2:ix+1,:,1:ke-ks+1,1)), 1, 1, ks, 1)
+           call update_hafs_restart_par(trim(ncfile_core), 'va', ix, iy, ke-ks+1, 1, tmp4d, 1, 1, ks, 1)
+           deallocate(tmp4d)
            !---convert earth wind to fv3grid wind
            allocate(u(ix, iy+1, ke-ks+1, 1), v(ix+1, iy, ke-ks+1, 1))
            u=-999999.; v=-99999999.;

@@ -41,9 +41,12 @@
   dd=360.0/float(ln)
 
   fd(1:mm2:2,  1:nn2:2  )=fi(1:mm,1:nn)
-  fd(2:mm2+1:2,2:nn2+1:2)=0.25*(fi(1:mm-1,1:nn-1)+fi(2:mm,1:nn-1)+fi(1:mm-1,2:nn)+fi(2:mm,2:nn))
-  fd(2:mm2+1:2,1:nn2+1:2)=0.5*(fi(1:mm-1,1:nn)+fi(2:mm,1:nn))
-  fd(1:mm2:2,  2:nn2+1:2)=0.5*(fi(1:mm,1:nn-1)+fi(1:mm,2:nn))
+!  fd(2:mm2+1:2,2:nn2+1:2)=0.25*(fi(1:mm-1,1:nn-1)+fi(2:mm,1:nn-1)+fi(1:mm-1,2:nn)+fi(2:mm,2:nn))
+  fd(2:mm2:2,2:nn2:2)=0.25*(fi(1:mm-1,1:nn-1)+fi(2:mm,1:nn-1)+fi(1:mm-1,2:nn)+fi(2:mm,2:nn))
+!  fd(2:mm2+1:2,1:nn2+1:2)=0.5*(fi(1:mm-1,1:nn)+fi(2:mm,1:nn))
+  fd(2:mm2:2,1:nn2:2)=0.5*(fi(1:mm-1,1:nn)+fi(2:mm,1:nn))
+!  fd(1:mm2:2,  2:nn2+1:2)=0.5*(fi(1:mm,1:nn-1)+fi(1:mm,2:nn))
+  fd(1:mm2:2,  2:nn2:2)=0.5*(fi(1:mm,1:nn-1)+fi(1:mm,2:nn))
 
   fd(i0+1,j0+1) = fd(i0+1,j0+1)*0.4+fd(i0+2,j0+2)*0.6
   fd(i0+1,j0  ) = fd(i0+1,j0  )*0.4+fd(i0+2,j0  )*0.6
