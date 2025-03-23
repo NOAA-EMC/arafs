@@ -164,7 +164,7 @@ opts="-t -f"
 #./run_hafs.py ${opts} 2024071918-2024072518 05W HISTORY ${confopts} # Gaemi
 #./run_hafs.py ${opts} 2024080700-2024081300 06W HISTORY ${confopts} # Maria
 #./run_hafs.py ${opts} 2024081206-2024081312 07W HISTORY ${confopts} # Son-Tinh
-#./run_hafs.py ${opts} 2024081212-2024081900 08W HISTORY ${confopts} # Ampil
+#./run_hafs.py ${opts} 2024081212-2024081806 08W HISTORY ${confopts} # Ampil
 #./run_hafs.py ${opts} 2024081300-2024081500 09W HISTORY ${confopts} # Wukong
 #./run_hafs.py ${opts} 2024081900-2024082018 10W HISTORY ${confopts} # Jongdari
 #./run_hafs.py ${opts} 2024082112-2024090112 11W HISTORY ${confopts} # Shanshan
@@ -180,8 +180,9 @@ opts="-t -f"
 #./run_hafs.py ${opts} 2024100606-2024101012 21W HISTORY ${confopts} # Barijat
 #./run_hafs.py ${opts} 2024102012-2024102900 22W HISTORY ${confopts} # Trami
 #./run_hafs.py ${opts} 2024102500-2024110118 23W HISTORY ${confopts} # Kong-Rey
-#./run_hafs.py ${opts} 2024110306-2024111206 24W HISTORY ${confopts} # Yinxing
-#./run_hafs.py ${opts} 2024110900-2024111912 25W HISTORY ${confopts} # Man-Yi
+#./run_hafs.py ${opts} 2024110306-2024111018 24W HISTORY ${confopts} # Yinxing
+#./run_hafs.py ${opts} 2024110900-2024111412 25W HISTORY ${confopts} # Man-Yi part 1
+#./run_hafs.py ${opts} 2024111500-2024111912 25W HISTORY ${confopts} # Man-Yi part 2
 #./run_hafs.py ${opts} 2024110906-2024111318 26W HISTORY ${confopts} # Toraji
 #./run_hafs.py ${opts} 2024111100-2024111612 27W HISTORY ${confopts} # Usagi
 #./run_hafs.py ${opts} 2024122218-2024122600 28W HISTORY ${confopts} # Pabuk
