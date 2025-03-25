@@ -182,7 +182,7 @@ opts="-t -f"
 #./run_hafs.py ${opts} 2024102500-2024110118 23W HISTORY ${confopts} # Kong-Rey
 #./run_hafs.py ${opts} 2024110306-2024111018 24W HISTORY ${confopts} # Yinxing
 #./run_hafs.py ${opts} 2024110900-2024111412 25W HISTORY ${confopts} # Man-Yi part 1
-#./run_hafs.py ${opts} 2024111500-2024111912 25W HISTORY ${confopts} # Man-Yi part 2
+#./run_hafs.py ${opts} 2024111500-2024111812 25W HISTORY ${confopts} # Man-Yi part 2
 #./run_hafs.py ${opts} 2024110906-2024111318 26W HISTORY ${confopts} # Toraji
 #./run_hafs.py ${opts} 2024111100-2024111612 27W HISTORY ${confopts} # Usagi
 #./run_hafs.py ${opts} 2024122218-2024122600 28W HISTORY ${confopts} # Pabuk
