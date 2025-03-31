@@ -95,6 +95,7 @@ archbase="${COMgraph}/figures"
 archdir="${archbase}/RT${yyyy}_${BASIN}/${STORMNM}${STID}/${STORMNM}${STID}.${YMDH}"
 
 intercompost=${WORKhafs}/intercom/post
+intercomprod=${WORKhafs}/intercom/product
 intercomgraph=${WORKhafs}/intercom/emc_graphics
 mkdir -p ${WORKgraph} ${intercomgraph}
 cd ${WORKgraph}
@@ -128,26 +129,15 @@ echo "skip graphics for forecast hour ${FHR3} valid at ${NEWDATE}"
 else
 
 atcfFile=${COMhafs}/${stormid}.${YMDH}.${RUN}.trak.atcfunix.all
-prodlog=${WORKhafs}/product/run_product.storm.log
-FHRN=$(($FHR + $NOUTHRS))
-STRFHRN="New forecast hour:$( printf "%5d" "$FHRN" ):00"
-STRDONE="top of output_all"
 
 # Wait for post and product output
 n=1
 while [ $n -le 600 ]; do
-  if [ -f ${intercompost}/postf${FHR3} ] && [ -f ${atcfFile} ]; then
-    echo "${intercompost}/postf${FHR3} and ${atcfFile} exist"
-    if grep -q "$STRDONE" ${prodlog} || grep -q "$STRFHRN" ${prodlog}; then
-      echo "GFDL tracker succeeded or has processed this time level, do graphics."
-      sleep 1s
-      break
-	else
-      echo "GFDL tracker has not processed this time level, sleep 60s"
-      sleep 60s
-    fi
+  if [ -f ${intercompost}/postf${FHR3} ] && [ -f ${intercomprod}/trak.nest02.f${FHR3} ] && [ -f ${atcfFile} ]; then
+    echo "${intercompost}/postf${FHR3}, ${intercomprod}/trak.nest02.f${FHR3}, and ${atcfFile} exist"
+    echo "Reay to do graphics."
   else
-    echo "${intercompost}/postf${FHR3} or ${atcfFile} not ready, sleep 60s"
+    echo "${intercompost}/postf${FHR3}, ${intercomprod}/trak.nest02.f${FHR3}, or ${atcfFile} not ready, sleep 60s"
     sleep 60s
   fi
   n=$(( n+1 ))

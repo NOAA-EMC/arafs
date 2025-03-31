@@ -82,7 +82,7 @@ else
   export MEMSTR="ensmean"
 fi
 
-export DATA=${WORKhafs}/enkf_hx/${MEMSTR}
+export DATA=${WORKhafs}/enkf_hx/${MEMSTR}${jobidstr}
 
 if [ "${SCRUBDATA:-YES}" = YES ]; then
   rm -rf $DATA

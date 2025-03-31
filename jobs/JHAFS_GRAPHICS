@@ -82,10 +82,10 @@ export GPLOThafs=${GPLOThafs:-${HOMEhafs}/sorc/hafs_graphics.fd/hrd_gplot}
 export GPLOT_DIR=${GPLOThafs}
 
 if [ "${GRAPH}" = "EMC" ]; then
-  export DATA=${WORKgraph}
+  export DATA=${WORKgraph}${jobidstr}
   exscript=exhafs_emcgraphics.sh
 elif [ "${GRAPH}" = "HRD" ]; then
-  export DATA=${WORKhafs}/hrdgraphics
+  export DATA=${WORKhafs}/hrdgraphics${jobidstr}
   exscript=exhafs_hrdgraphics.sh
 else
   echo "FATAL ERROR: Wrong GRAPH option ${GRAPH}, should be either EMC or HRD."
