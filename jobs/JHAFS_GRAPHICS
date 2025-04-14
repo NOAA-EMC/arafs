@@ -2,7 +2,7 @@
 
 date
 export PS4='+ $SECONDS + '
-set -xue
+set -x
 
 export cycle=${cycle:-t${cyc:?}z}
 export storm_num=${storm_num:-1}
@@ -37,6 +37,9 @@ if [ "${RUN_ENVIR^^}" != "NCO" ]; then
   if [ "${GRAPH}" = "EMC" ]; then
     if [ ${machine} = hera ]; then 
        module purge
+    fi
+    if [ ${machine} = wcoss2 ]; then
+       module reset
     fi
     module use ${HOMEhafs}/sorc/hafs_graphics.fd/emc_graphics/modulefiles
     module load graphics.run.${machine}

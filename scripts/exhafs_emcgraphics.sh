@@ -6,7 +6,7 @@
 #   This script generates EMC graphics through hafs_graphcs.
 ################################################################################
 #
-set -xe
+set -x -o pipefail
 
 date
 
