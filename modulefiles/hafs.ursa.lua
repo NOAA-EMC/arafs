@@ -121,8 +121,6 @@ load(pathJoin("py-scipy", scipy_ver))
 rocoto_ver=os.getenv("rocoto_ver") or "1.3.7"
 load(pathJoin("rocoto", rocoto_ver))
 
---prepend_path("PATH", "/apps/contrib/rocoto/1.3.7/bin")
-
 setenv("CMAKE_C_COMPILER", "mpiicc")
 setenv("CMAKE_CXX_COMPILER", "mpiicpc")
 setenv("CMAKE_Fortran_COMPILER", "mpiifort")

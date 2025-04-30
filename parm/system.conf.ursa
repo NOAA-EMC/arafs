@@ -5,42 +5,42 @@ disk_project=pilot-users
 ## Project hpss tape area
 tape_project=emc-hwrf
 ## CPU account name for submitting jobs to the batch system.
-cpu_account=pilot-users
+cpu_account=hwrf
 ## Archive path
 archive=hpss:/NCEPDEV/{tape_project}/5year/{ENV[USER]}/{SUBEXPT}/{out_prefix}.tar
 
 [dir]
 ## Save directory.  Make sure you edit this.
-CDSAVE=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/save
+CDSAVE=/scratch3/NCEPDEV/{disk_project}/save/{ENV[USER]}
 ## Non-scrubbed directory for track files, etc.  Make sure you edit this.
-CDNOSCRUB=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub
+CDNOSCRUB=/scratch3/NCEPDEV/{disk_project}/noscrub/{ENV[USER]}
 ## Scrubbed directory for large work files.  Make sure you edit this.
-CDSCRUB=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/scrub
+CDSCRUB=/scratch3/NCEPDEV/{disk_project}/scrub/{ENV[USER]}
 ## Syndat directory for finding which cycles to run
-syndat=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/input/SYNDAT-PLUS
+syndat=/scratch3/NCEPDEV/{disk_project}/noscrub/input/SYNDAT-PLUS
 #oldcom={ENV[COMOLD]}
 COMOLD={oldcom}
 COMIN={COMhafs}
 COMOUT={COMhafs}
 COMINnhc={ENV[DCOMROOT|-/dcom]}/nhc/atcf/ncep
 COMINjtwc={ENV[DCOMROOT|-/dcom]}/{ENV[PDY]}/wtxtbul/storm_data
-COMgfs=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/hafs-input/COMGFSv16
+COMgfs=/scratch3/NCEPDEV/{disk_project}/noscrub/hafs-input/COMGFSv16
 COMINobs={COMgfs}
 COMINgfs={COMgfs}
 COMINgdas={COMgfs}
 COMINarch={COMgfs}/syndat
-COMrtofs=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/hafs-input/COMRTOFSv2.5_new
+COMrtofs=/scratch3/NCEPDEV/{disk_project}/noscrub/hafs-input/COMRTOFSv2.5_new
 COMINrtofs={COMrtofs}
 COMINmsg={COMINgfs}
 COMINhafs={COMINgfs}
-DATMdir=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/DATM
-DOCNdir=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/DOCN
+DATMdir=/scratch3/NCEPDEV/{disk_project}/noscrub/{ENV[USER]}/DATM
+DOCNdir=/scratch3/NCEPDEV/{disk_project}/noscrub/{ENV[USER]}/DOCN
 ## A-Deck directory for graphics
-ADECKhafs=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/hwrf-input/abdeck/aid
+ADECKhafs=/scratch3/NCEPDEV/{disk_project}/noscrub/input/abdeck/aid
 ## B-Deck directory for graphics
-BDECKhafs=/tds_scratch2/SYSADMIN/{disk_project}/{ENV[USER]}/noscrub/btk
+BDECKhafs=/scratch3/NCEPDEV/{disk_project}/noscrub/input/abdeck/btk
 ## cartopyDataDir directory for graphics
-cartopyDataDir=/tds_scratch2/SYSADMIN/pilot-users/Biju.Thomas/noscrub/shared/cartopy
+cartopyDataDir=/scratch3/NCEPDEV/{disk_project}/noscrub/local/cartopy
 
 [forecast]
 quilting_restart=.false.

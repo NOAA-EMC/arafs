@@ -46,7 +46,7 @@ elif [[ -d /scratch1/NCEPDEV ]] ; then
   module purge
   module use /apps/modules/modulefiles
   module use /apps/lmod/lmod/modulefiles/Core
-elif [[ -d //tds_scratch2/SYSADMIN/pilot-users ]]; then
+elif [[ -d /scratch3/NCEPDEV && -d /scratch4/NCEPDEV ]] ; then
   # We are on NOAA Ursa
   target=ursa
   source $MODULESHOME/init/$__ms_shell
