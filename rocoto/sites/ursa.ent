@@ -3,16 +3,16 @@
   <!ENTITY ACCOUNT         "&CPU_ACCOUNT;">
   <!ENTITY QUEUE_PE        "batch"> <!-- queue for PE (parallel environment) jobs -->
   <!ENTITY QUEUE_FORECAST  "batch"> <!-- queue for PE (parallel environment) jobs -->
-  <!ENTITY PE_EXTRA        "<native>--partition=compute --exclusive</native>">
+  <!ENTITY PE_EXTRA        "<native>--partition=u1 --exclusive</native>">
   <!ENTITY QUEUE_SERIAL    "batch"> <!-- queue for serial jobs -->
-  <!ENTITY SERIAL_EXTRA    "<native>--partition=compute</native>">
+  <!ENTITY SERIAL_EXTRA    "<native>--partition=u1</native>">
   <!ENTITY QUEUE_SHARED    "batch">
-  <!ENTITY SHARED_EXTRA    "<native>--partition=compute</native>">
+  <!ENTITY SHARED_EXTRA    "<native>--partition=u1</native>">
   <!ENTITY QUEUE_SERVICE   "batch">
   <!ENTITY CLUSTER_COMPUTE "">
   <!ENTITY CLUSTER_DT      "">
-  <!ENTITY SERVICE         "<native>--partition=service</native>">
-  <!ENTITY SERVICE_EXTRA   "<native>--partition=service</native>">
+  <!ENTITY SERVICE         "<native>--partition=u1-service</native>">
+  <!ENTITY SERVICE_EXTRA   "<native>--partition=u1-service</native>">
   <!ENTITY CORES_EXTRA     "<nodesize>192</nodesize>">
   <!ENTITY NODES_EXTRA     "<nodesize>192</nodesize>">
   <!ENTITY RESERVATION     "">
