@@ -5,6 +5,14 @@
 # Abstract:
 #   This script runs the GFDL vortex tracker to generate the ATCF track files,
 #   and produces the stakeholder (NHC/JTWC) needed products (if desired).
+# History:
+#   04/20/2019: Initial version introduced in HAFS application
+#   10/24/2022: Add NHC products (afos,grib_stats.short,stats.tpc)
+#   04/01/2023: Improvements for HAFSv1 operational implementation
+#   03/31/2025: Improve and add trak done log file the product/tracker job
+# Condition codes:
+#   == 0 : success
+#   != 0 : fatal error encounted
 ################################################################################
 set -x -o pipefail
 
@@ -326,7 +334,7 @@ if [ ${COMOUTproduct} = ${COMhafs} ] && [ -s ${COMhafs}/${trk_atcfunix} ]; then
   if [ "${SENDDBN^^}" = "YES" ]; then
     $DBNROOT/bin/dbn_alert MODEL NHC_ATCF_${RUN^^} $job ${atcfncep}
   fi
-  if [ "${RUN_ENVIR^^}" = "NCO" ]; then
+  if [ -n "${ECF_NAME}" ]; then
     ecflow_client --event SentTrackToNHC
   fi
   # Cat atcf global file
