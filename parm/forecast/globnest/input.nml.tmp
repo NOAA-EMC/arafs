@@ -170,7 +170,7 @@
   pdfcld         = .false.
   min_lakeice    = 0.15
   min_seaice     = 0.15
-  use_cice_alb   = .false
+  use_cice_alb   = .false.
   fhswr          = @[fhswr]
   fhlwr          = @[fhlwr]
   ialb           = @[ialb]
