@@ -10,7 +10,6 @@ export stormlabel=${stormlabel:-storm$storm_num}
 export hafs_ver=${hafs_ver:?}
 export NET=${NET:?}
 export RUN=${RUN:?}
-export RUN_ENVIR=${RUN_ENVIR:?}
 
 export SENDCOM=${SENDCOM:-YES}
 export SENDDBN=${SENDDBN:-NO}
@@ -61,7 +60,7 @@ env
 
 export PYTHONPATH=$PYTHONPATH:${HOMEhafs}/ush/mom6_obc
 
-export DATA=${WORKhafs}/ocn_prep
+export DATA=${WORKhafs}/ocn_prep${jobidstr}
 
 if [ "${SCRUBDATA:-YES}" = "YES" ]; then
   rm -rf $DATA

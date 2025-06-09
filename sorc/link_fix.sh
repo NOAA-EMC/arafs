@@ -9,7 +9,7 @@ cwd=$(pwd)
 
 HOMEhafs=$(pwd)/..
 FIXhafs=${HOMEhafs}/fix
-FIXversion=20240703
+FIXversion=20250205
 mkdir -p ${FIXhafs}
 cd ${FIXhafs}
 mkdir -p fix_fv3
@@ -20,7 +20,9 @@ elif [ ${target} == "hera" ]; then
 elif [ ${target} == "orion" ] || [ ${target} == "hercules" ]; then
   FIXROOT=/work/noaa/hwrf/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 elif [ ${target} == "jet" ]; then
-  FIXROOT=/lfs5/HFIP/hwrf-data/hafs-fix-files/hafs-${FIXversion}-fix/fix
+  FIXROOT=/lfs5/HFIP/hwrf-data/hafs-fix-files/hafs-${FIXversion}-fix/fix 
+elif [ ${target} == "gaeac6" ]; then
+  FIXROOT=/gpfs/f6/drsa-hurr1/world-shared/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 else
   echo "FATAL ERROR: Unknown site " ${target}
   exit 1
