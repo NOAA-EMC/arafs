@@ -58,6 +58,7 @@ FORECAST_RESTART_HC=${FORECAST_RESTART_HC:-""}
 # Reset options specific to the ensemble forecast if needed
 if [ "${ENSDA}" = YES ]; then
 # Ensemble member with ENSID <= ${ENS_FCST_SIZE} will run the full-length NHRS forecast
+  nest_grids=${nest_grids_ens:-${nest_grids}}
   if [ $((10#${ENSID})) -le ${ENS_FCST_SIZE:-10} ]; then
     NHRS=${NHRS:-126}
   else
@@ -246,6 +247,8 @@ output_grid=$(echo ${output_grid} | sed -e 's/_moving//g')
 else # Otherwise this a regular forecast run
 
 if [ "${ENSDA}" = YES ]; then
+  run_ocean=no #Should we make it optional in case we have ocean DA? But we may not have ocean ensemble anyway #XL
+  run_wave=no
   FIXgrid=${FIXgrid:-${WORKhafs}/intercom/atm_prep_ens/grid_ens}
   INPdir=${INPdir:-${WORKhafs}/intercom/atm_inp_ens/mem${ENSID}}
   OUTdir=${OUTdir:-${WORKhafs}/intercom/forecast_ens/mem${ENSID}}
