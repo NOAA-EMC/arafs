@@ -54,7 +54,6 @@ sed -e "s/DIST/SHRD/g"\
     -e "s/MPIT / /g"\
     -e "s/MPI / /g"\
     -e "s/PIO / /g"\
-    -e "s/BIN2NC / /g"\
     -e "s/B4B / /g"\
     -e "s/PDLIB / /g"\
     -e "s/NOGRB/NCEP2/g"\
