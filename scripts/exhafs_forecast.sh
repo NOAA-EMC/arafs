@@ -135,8 +135,11 @@ if [ "${ENSDA}" = YES ]; then
   do_shum=${do_shum_ens:-.false.}
   do_skeb=${do_skeb_ens:-.false.}
   npz=${npz_ens:-64}
-  output_grid_dlon_ens=${output_grid_dlon_ens:-$(awk "BEGIN {print ${output_grid_dlon:-0.025}*${GRID_RATIO_ENS:-1}}")}
-  output_grid_dlat_ens=${output_grid_dlat_ens:-$(awk "BEGIN {print ${output_grid_dlat:-0.025}*${GRID_RATIO_ENS:-1}}")}
+  output_grid=${output_grid_ens}
+  output_grid_cen_lon=${output_grid_cen_lon_ens}
+  output_grid_cen_lat=${output_grid_cen_lat_ens}
+  output_grid_lon_span=${output_grid_lon_span_ens}
+  output_grid_lat_span=${output_grid_lat_span_ens}
   output_grid_dlon=${output_grid_dlon_ens}
   output_grid_dlat=${output_grid_dlat_ens}
 fi

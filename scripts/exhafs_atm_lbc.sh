@@ -145,7 +145,9 @@ cd ${DATA_BC}
 if [ $bctype = "gfsnetcdf" ]; then
   if [ ${ENSDA} = YES ]; then
     atm_files_input_grid=gdas.t${cyc}z.atmf${FHR3}.nc
-    sfc_files_input_grid=gdas.t${cyc}z.sfcf${FHR3}.nc
+  # sfc nc file is not needed/used to generate atm lbc file
+  # sfc_files_input_grid=gdas.t${cyc}z.sfcf${FHR3}.nc
+    sfc_files_input_grid=gdas.t${cyc}z.atmf${FHR3}.nc
   else
     atm_files_input_grid=${CDUMP}.t${cyc}z.atmanl.nc
     sfc_files_input_grid=${CDUMP}.t${cyc}z.sfcanl.nc
