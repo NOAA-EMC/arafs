@@ -910,7 +910,6 @@
         <!-- Start the ocn_post if the forecast is running or if it has
              already completed. -->
         <or>
-          <taskdep task="forecast" state="RUNNING"/>
           <taskdep task="forecast"/>
         </or>
         <taskdep task="unpost"/>
