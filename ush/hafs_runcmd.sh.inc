@@ -63,6 +63,8 @@ elif [ "$machine" = jet ] || [ "$machine" = hera ] || [ "$machine" = orion ] || 
   export APRUNF="time"
   export APRUNCFP="time"
   export BACKGROUND="&"
+  export USE_CFP="NO"
+  export USE_MPISERIAL="YES"
 else
   echo "WARNING: unknown platform. Guessing the job run commands..."
   export APRUN="time"
@@ -72,6 +74,8 @@ else
   export APRUNF="${MPISERIAL:-mpiserial}"
   export APRUNCFP="time"
   export BACKGROUND=""
+  export USE_CFP="NO"
+  export USE_MPISERIAL="YES"
 fi
 
 # Some commonly used commands
