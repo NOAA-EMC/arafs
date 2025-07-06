@@ -110,9 +110,6 @@ load(pathJoin("cdo", cdo_ver))
 ncdiag_ver=os.getenv("ncdiag_ver")
 load(pathJoin("ncdiag-A", ncdiag_ver))
 
-ncio_ver=os.getenv("ncio_ver")
-load(pathJoin("ncio-A", ncio_ver))
-
 pio_ver=os.getenv("pio_ver")
 load(pathJoin("pio-C", pio_ver))
 
