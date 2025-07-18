@@ -227,7 +227,7 @@
   isot           = 1
   lsoil          = 4
   lsm            = @[lsm]
-  iopt_dveg      = 4
+  iopt_dveg      = 1
   iopt_crs       = 2
   iopt_btr       = 1
   iopt_run       = 1
