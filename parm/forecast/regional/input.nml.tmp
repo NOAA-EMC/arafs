@@ -193,6 +193,7 @@
   redrag         = .true.
   dspheat        = .true.
   sa3dtke        = @[sa3dtke]
+  tte_edmf       = @[tte_edmf]
   hybedmf        = .false.
   hurr_pbl       = .true. ! HWRF moninedmf
   moninq_fac     = -1.0   ! HWRF_moninedmf
