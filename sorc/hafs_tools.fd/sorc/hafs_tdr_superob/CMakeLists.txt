@@ -25,8 +25,8 @@ find_package(bufr REQUIRED)
 
 set(fortran_srcs
   ./module_tdr_common.f90
-  ./module_tdr_superob.f90
   ./module_tdr_bufr.f90
+  ./module_tdr_superob.f90
   ./tdr_so_main.f90)
 
 set(exe_name hafs_tdr_superob.x)
