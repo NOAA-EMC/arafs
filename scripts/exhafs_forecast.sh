@@ -40,6 +40,7 @@ FIXam=${FIXam:-${FIXhafs}/fix_am}
 FIXcrtm=${FIXcrtm:-${CRTM_FIX:?}}
 FIXhycom=${FIXhycom:-${FIXhafs}/fix_hycom}
 FIXmom6=${FIXmom6:-${FIXhafs}/fix_mom6}
+FIXmom6_ar2=/gpfs/f6/drsa-hurr1/world-shared/save/Bin.Li/arafs/fix/fix_mom6_ar2
 if [ ${ocean_model} = "hycom" ]; then
   FORECASTEXEC=${FORECASTEXEC:-${EXEChafs}/hafs_forecast_hycom.x}
 else
@@ -400,7 +401,8 @@ if [ ${ocean_domain:-auto} = "auto" ]; then
 
 if [ ${pubbasin2} = "AL" ] || [ ${pubbasin2} = "EP" ] || [ ${pubbasin2} = "CP" ] || \
    [ ${pubbasin2} = "SL" ] || [ ${pubbasin2} = "LS" ]; then
-  ocean_domain=nhc
+  #ocean_domain=nhc
+  ocean_domain=ar2
 elif [ ${pubbasin2} = "WP" ] || [ ${pubbasin2} = "IO" ]; then
   ocean_domain=jtnh
 elif [ ${pubbasin2} = "SH" ] || [ ${pubbasin2} = "SP" ] || [ ${pubbasin2} = "SI" ]; then
@@ -1369,21 +1371,34 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
   # Ocean IC and OBC
   ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_ic.nc INPUT/ocean_ssh_ic.nc
   ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_ic.nc INPUT/ocean_ts_ic.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc INPUT/ocean_uv_ic.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_east.nc INPUT/ocean_ssh_obc_east.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_north.nc INPUT/ocean_ssh_obc_north.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_south.nc INPUT/ocean_ssh_obc_south.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_west.nc INPUT/ocean_ssh_obc_west.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_east.nc INPUT/ocean_ts_obc_east.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_north.nc INPUT/ocean_ts_obc_north.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_south.nc INPUT/ocean_ts_obc_south.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_west.nc INPUT/ocean_ts_obc_west.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_east.nc INPUT/ocean_uv_obc_east.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_north.nc INPUT/ocean_uv_obc_north.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_south.nc INPUT/ocean_uv_obc_south.nc
-  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_west.nc INPUT/ocean_uv_obc_west.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc INPUT/ocean_uv_ic.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_east.nc INPUT/ocean_ssh_obc_east.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_north.nc INPUT/ocean_ssh_obc_north.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_south.nc INPUT/ocean_ssh_obc_south.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_west.nc INPUT/ocean_ssh_obc_west.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_east.nc INPUT/ocean_ts_obc_east.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_north.nc INPUT/ocean_ts_obc_north.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_south.nc INPUT/ocean_ts_obc_south.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_obc_west.nc INPUT/ocean_ts_obc_west.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_east.nc INPUT/ocean_uv_obc_east.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_north.nc INPUT/ocean_uv_obc_north.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_south.nc INPUT/ocean_uv_obc_south.nc
+#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_obc_west.nc INPUT/ocean_uv_obc_west.nc
 
   # Ocean fix files
+if [ ${ocean_domain} = "ar2" ]; then
+  ${NLN} ${FIXmom6}/ocean_vgrid_lev55.nc INPUT/ocean_vgrid.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_hgrid.nc INPUT/ocean_hgrid.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_topog.nc INPUT/ocean_topog.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_mosaic.nc INPUT/ocean_mosaic.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_geothermal.nc INPUT/ocean_geothermal.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_tidal_amplitude.nc INPUT/ocean_tidal_amplitude.nc
+  ${NLN} ${FIXmom6_ar2}/ocean_chla.nc INPUT/ocean_chla.nc
+  ${NLN} ${FIXmom6}/runoff.daitren.clim.v20180328.nc INPUT/ocean_runoff_monthly.nc
+  ${NLN} ${FIXmom6}/woa23_decav91C0_monthly_sss_04_fill0.nc INPUT/ocean_salt_restore.nc
+  # Ocean mesh
+  ${NLN} ${FIXmom6_ar2}/mom6_mesh.nc INPUT/mom6_mesh.nc
+else
   ${NLN} ${FIXmom6}/ocean_vgrid_lev55.nc INPUT/ocean_vgrid.nc
   ${NLN} ${FIXmom6}/${ocean_domain}/ocean_hgrid.nc INPUT/ocean_hgrid.nc
   ${NLN} ${FIXmom6}/${ocean_domain}/ocean_topog.nc INPUT/ocean_topog.nc
@@ -1397,6 +1412,7 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
 
   # Ocean mesh
   ${NLN} ${FIXmom6}/${ocean_domain}/mom6_mesh.nc INPUT/mom6_mesh.nc
+fi
   # Atmospheric forcings from GFS
   ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/gfs_forcings.nc INPUT/gfs_forcings.nc
   # DATM gfs mesh
@@ -1413,7 +1429,11 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
   atparse < ./stream.config.IN > ./stream.config
 
   # MOM_input
-  ${NCP} ${PARMmom6}/hafs_mom6_${RUN}.input.IN ./hafs_mom6.input.IN
+  if [ ${ocean_domain} = "ar2" ]; then
+    ${NCP} ${PARMmom6}/hafs_mom6_ar2_${RUN}.input.IN ./hafs_mom6.input.IN
+  else
+    ${NCP} ${PARMmom6}/hafs_mom6_${RUN}.input.IN ./hafs_mom6.input.IN
+  fi
   niglobal=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lonh, size =" | cut -f 7 -d ' ' | uniq)
   njglobal=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lath, size =" | cut -f 7 -d ' ' | uniq)
   atparse < ./hafs_mom6.input.IN > ./MOM_input

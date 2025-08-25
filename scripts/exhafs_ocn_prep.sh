@@ -13,6 +13,8 @@
 #   != 0 : fatal error encounted
 ################################################################################
 set -x -o pipefail
+module load ncl
+which ncl
 
 CDATE=${CDATE:-${YMDH}}
 cyc=${cyc:-00}
@@ -30,7 +32,8 @@ if [ ${ocean_domain:-auto} = "auto" ]; then
 
 if [ ${pubbasin2} = "AL" ] || [ ${pubbasin2} = "EP" ] || [ ${pubbasin2} = "CP" ] || \
    [ ${pubbasin2} = "SL" ] || [ ${pubbasin2} = "LS" ]; then
-  ocean_domain=nhc
+#  ocean_domain=nhc
+  ocean_domain=ar2
 elif [ ${pubbasin2} = "WP" ] || [ ${pubbasin2} = "IO" ]; then
   ocean_domain=jtnh
 elif [ ${pubbasin2} = "SH" ] || [ ${pubbasin2} = "SP" ] || [ ${pubbasin2} = "SI" ]; then
@@ -117,9 +120,22 @@ export err=$?; err_chk
 # Change into netcdf3 format
 ncks -O -3 rtofs_${outnc_2d} rtofs_${outnc_2d}
 # Rename variables so they match MOM6 variable name
-ncrename -d Latitude,lath -d Longitude,lonh -d MT,time \
-         -v Latitude,lath -v Longitude,lonh -v MT,time -v ssh,ave_ssh \
+ncrename -d .Latitude,lath -d .Longitude,lonh -d MT,time \
+         -v .Latitude,lath -v .Longitude,lonh -v MT,time -v ssh,ave_ssh \
          rtofs_${outnc_2d} ${outnc_2d}
+if [ ${ocean_domain} == "ar2" ]; then
+  ${NCP} ${FIXhafs}/fix_mom6_${ocean_domain}/map_rtofs_to_ar2_regular.nc .
+  ${NCP} ${FIXhafs}/fix_mom6_${ocean_domain}/lon_lat_ar2_regular_grid.nc .
+  mv ${outnc_2d} tmp_${outnc_2d}
+# get ocean_ssh_ic.nc
+  cp ${USHhafs}/ncl/regrid_ssh.ncl .
+  ncl <  regrid_ssh.ncl
+  ncks  -A -C -v Date tmp_${outnc_2d} ${outnc_2d}
+  ncks  -A -C -v time tmp_${outnc_2d} ${outnc_2d}
+  ncrename -d latitude,lath -d longitude,lonh \
+         -v latitude,lath -v longitude,lonh \
+         ${outnc_2d}
+fi
 # Change into netcdf4 format
 ncks -O -4 ${outnc_2d} ${outnc_2d}
 # Convert variable to double precission
@@ -131,69 +147,81 @@ ncatted -a _FillValue,ave_ssh,o,f,0.0 ${outnc_2d}
 # Change into netcdf3 format
 ncks -O -3 rtofs_${outnc_ts} rtofs_${outnc_ts}
 # Rename variables so that they match MOM6 variable name
-ncrename -d Depth,depth -d Latitude,lath -d Longitude,lonh -d MT,time \
-         -v Depth,depth -v Latitude,lath -v Longitude,lonh -v MT,time \
+ncrename -d Depth,depth -d .Latitude,lath -d .Longitude,lonh -d MT,time \
+         -v Depth,depth -v .Latitude,lath -v .Longitude,lonh -v MT,time \
          -v pot_temp,Temp -v salinity,Salt \
          rtofs_${outnc_ts} ${outnc_ts}
+if [ ${ocean_domain} == "ar2" ]; then
+  mv ${outnc_ts} tmp_${outnc_ts}
+# get ocean_ts_ic.nc
+  cp ${USHhafs}/ncl/regrid_ts.ncl .
+  ncl <  regrid_ts.ncl
+  ncks  -A -C -v Date tmp_${outnc_ts} ${outnc_ts}
+  ncks  -A -C -v time tmp_${outnc_ts} ${outnc_ts}
+  ncrename -d latitude,lath -d longitude,lonh \
+         -v latitude,lath -v longitude,lonh \
+         ${outnc_ts}
+fi
 # Change into netcdf4 format
 ncks -O -4 ${outnc_ts} ${outnc_ts}
 
 # UV file
-ncrename -d Depth,Layer -d Latitude,lath -d Longitude,lonh -d MT,Time \
-         -v Depth,Layer -v Latitude,lath -v Longitude,lonh -v MT,Time \
-         rtofs_${outnc_uv} mom6_layer_${outnc_uv}
+ncrename -d .Latitude,lath -d .Longitude,lonh -d MT,Time \
+         -v .Latitude,lath -v .Longitude,lonh -v MT,Time \
+         rtofs_${outnc_uv} mom6_layer_1.nc
+ncrename -v Depth,Layer mom6_layer_1.nc mom6_layer_${outnc_uv}\
 
 ${NCP} -p mom6_layer_${outnc_uv} hycom_3d.nc
 
 # This method requires to have a MOM.res.nc file for the specific domain as a
 # template. If we follow this procedure, probably we should have a MOM.res.nc
 # template in the fix MOM6 files
-${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./
-${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./MOM.res_ic.nc
-nlonq=$(ncks --trd -m MOM.res.nc | grep -E -i ": lonq, size =" | cut -f 7 -d ' ' | uniq)
-nlatq=$(ncks --trd -m MOM.res.nc | grep -E -i ": latq, size =" | cut -f 7 -d ' ' | uniq)
-ncks -O -F -d latq,2,${nlatq} -d lonq,2,${nlonq} MOM.res_ic.nc MOM.res.nc
-ncks -O -F -v u -d lonq,1,1 MOM.res_ic.nc tmp1_u.nc
-ncks -O -F -v v -d latq,1,1 MOM.res_ic.nc tmp1_v.nc
+#${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./
+#${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./MOM.res_ic.nc
+#nlonq=$(ncks --trd -m MOM.res.nc | grep -E -i ": lonq, size =" | cut -f 7 -d ' ' | uniq)
+#nlatq=$(ncks --trd -m MOM.res.nc | grep -E -i ": latq, size =" | cut -f 7 -d ' ' | uniq)
+#ncks -O -F -d latq,2,${nlatq} -d lonq,2,${nlonq} MOM.res_ic.nc MOM.res.nc
+#ncks -O -F -v u -d lonq,1,1 MOM.res_ic.nc tmp1_u.nc
+#ncks -O -F -v v -d latq,1,1 MOM.res_ic.nc tmp1_v.nc
 
 # Convert into double precision
-ncap2 -O -s "lonh=lonh*1.0" -s "lath=lath*1.0" -s "Layer=Layer*1.0" -s "u=u*1.0" -s "v=v*1.0" hycom_3d.nc hycom_3d.nc
+#ncap2 -O -s "lonh=lonh*1.0" -s "lath=lath*1.0" -s "Layer=Layer*1.0" -s "u=u*1.0" -s "v=v*1.0" hycom_3d.nc hycom_3d.nc
 
 # Extract u and v
-ncks -O -v u hycom_3d.nc tmp2_u.nc
-ncks -O -v v hycom_3d.nc tmp2_v.nc
+#ncks -O -v lonh, u hycom_3d.nc tmp2_u.nc
+#ncks -O -v lath,v hycom_3d.nc tmp2_v.nc
 
-ncrename -O -d lonh,lonq -v lonh,lonq tmp2_u.nc tmp2_u.nc
-ncrename -O -d lath,latq -v lath,latq tmp2_v.nc tmp2_v.nc
+#ncrename -O -d .lonh,lonq -v .lonh,lonq tmp2_u.nc tmp2_u.nc
+#ncrename -O -d .lath,latq -v .lath,latq tmp2_v.nc tmp2_v.nc
 
-ncks -A -C -v lonq MOM.res.nc tmp2_u.nc
-ncks -A -C -v latq MOM.res.nc tmp2_v.nc
+#ncks -A -C -v lonq MOM.res.nc tmp2_u.nc
+#ncks -A -C -v latq MOM.res.nc tmp2_v.nc
 
-ncpdq -O -a lonq,lath,Layer,Time tmp1_u.nc tmp1_u.nc
-ncpdq -O -a lonq,lath,Layer,Time tmp2_u.nc tmp2_u.nc
+#ncpdq -O -a lonq,lath,Layer,Time tmp1_u.nc tmp1_u.nc
+#ncpdq -O -a lonq,lath,Layer,Time tmp2_u.nc tmp2_u.nc
 
-ncpdq -O -a latq,lonh,Layer,Time tmp1_v.nc tmp1_v.nc
-ncpdq -O -a latq,lonh,Layer,Time tmp2_v.nc tmp2_v.nc
+#ncpdq -O -a latq,lonh,Layer,Time tmp1_v.nc tmp1_v.nc
+#ncpdq -O -a latq,lonh,Layer,Time tmp2_v.nc tmp2_v.nc
 
 # Consider speeding up these two ncrcat steps in the future
-ncrcat -O tmp1_u.nc tmp2_u.nc tmp_u.nc
-ncrcat -O tmp1_v.nc tmp2_v.nc tmp_v.nc
+#ncrcat -O tmp1_u.nc tmp2_u.nc tmp_u.nc
+#ncrcat -O tmp1_v.nc tmp2_v.nc tmp_v.nc
 
-ncpdq -O -a Time,Layer,lath,lonq tmp_u.nc tmp_u.nc
-ncpdq -O -a Time,Layer,latq,lonh tmp_v.nc tmp_v.nc
+#ncpdq -O -a Time,Layer,lath,lonq tmp_u.nc tmp_u.nc
+#ncpdq -O -a Time,Layer,latq,lonh tmp_v.nc tmp_v.nc
 
-ncks -A -C -v Time,Layer,lath,lonq,u tmp_u.nc tmp_uv.nc
-ncks -A -C -v Time,Layer,latq,lonh,v tmp_v.nc tmp_uv.nc
+#ncks -A -C -v Time,Layer,lath,lonq,u tmp_u.nc tmp_uv.nc
+#ncks -A -C -v Time,Layer,latq,lonh,v tmp_v.nc tmp_uv.nc
 
 # Set values on the land grids to zero, and deal with first column/row
-ncap2 -s 'where(u>100.0) u=0.0' -s 'where(v>100.0) v=0.0' \
-      -s 'u=u;u(:,:,:,0)=u(:,:,:,1)' -s 'v=v;v(:,:,0,:)=v(:,:,1,:)' \
-      tmp_uv.nc ${outnc_uv}
+#ncap2 -s 'where(u>100.0) u=0.0' -s 'where(v>100.0) v=0.0' \
+#      -s 'u=u;u(:,:,:,0)=u(:,:,:,1)' -s 'v=v;v(:,:,0,:)=v(:,:,1,:)' \
+#      tmp_uv.nc ${outnc_uv}
 
 # Deliver to intercom
 ${NCP} -p ${outnc_2d} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_ic.nc
 ${NCP} -p ${outnc_ts} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_ic.nc
-${NCP} -p ${outnc_uv} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc
+#${NCP} -p ${outnc_uv} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc
 
 #==============================================================================
 
@@ -225,20 +253,20 @@ export CDF034=rtofs.${type}${hour}_${outnc_ts}
 export CDF033=rtofs.${type}${hour}_${outnc_uv}
 
 # run HYCOM-tools executables to produce IC netcdf files
-${NCP} ${PARMmom6}/hafs_mom6_${ocean_domain}.rtofs_ocean_ssh_obc.in ./rtofs_ocean_ssh_obc.in
+#${NCP} ${PARMmom6}/hafs_mom6_${ocean_domain}.rtofs_ocean_ssh_obc.in ./rtofs_ocean_ssh_obc.in
 
-${APRUNS} ${EXEChafs}/hafs_hycom_utils_archv2ncdf2d.x < ./rtofs_ocean_ssh_obc.in 2>&1 | tee ./archv2ncdf2d_ssh_obc.log
-export err=$?; err_chk
+#${APRUNS} ${EXEChafs}/hafs_hycom_utils_archv2ncdf2d.x < ./rtofs_ocean_ssh_obc.in 2>&1 | tee ./archv2ncdf2d_ssh_obc.log
+#export err=$?; err_chk
 
-${NCP} ${PARMmom6}/hafs_mom6_${ocean_domain}.rtofs_ocean_3d_obc.in ./rtofs_ocean_3d_obc.in
-${APRUNS} ${EXEChafs}/hafs_hycom_utils_archv2ncdf3z.x < ./rtofs_ocean_3d_obc.in 2>&1 | tee ./archv2ncdf3z_3d_obc.log
-export err=$?; err_chk
+#${NCP} ${PARMmom6}/hafs_mom6_${ocean_domain}.rtofs_ocean_3d_obc.in ./rtofs_ocean_3d_obc.in
+#${APRUNS} ${EXEChafs}/hafs_hycom_utils_archv2ncdf3z.x < ./rtofs_ocean_3d_obc.in 2>&1 | tee ./archv2ncdf3z_3d_obc.log
+#export err=$?; err_chk
 
 # Run Python script to generate OBC
-${NLN} ${FIXhafs}/fix_mom6/${ocean_domain}/ocean_hgrid.nc ./
-${APRUNS} ${USHhafs}/hafs_mom6_obc_from_rtofs.py ./ ./ \
-    rtofs.${type}${hour}_${outnc_2d} rtofs.${type}${hour}_${outnc_ts} rtofs.${type}${hour}_${outnc_uv} \
-    'Longitude' 'Latitude' ./ocean_hgrid.nc 'x' 'y' 2>&1 | tee ./mom6_obc_from_rtofs.log
+#${NLN} ${FIXhafs}/fix_mom6/${ocean_domain}/ocean_hgrid.nc ./
+#${APRUNS} ${USHhafs}/hafs_mom6_obc_from_rtofs.py ./ ./ \
+#    rtofs.${type}${hour}_${outnc_2d} rtofs.${type}${hour}_${outnc_ts} rtofs.${type}${hour}_${outnc_uv} \
+#    'Longitude' 'Latitude' ./ocean_hgrid.nc 'x' 'y' 2>&1 | tee ./mom6_obc_from_rtofs.log
 export err=$?; err_chk
 
 # next obc hour
@@ -249,16 +277,16 @@ export err=$?; err_chk
 #done
 
 # Concatenate in time OBC files
-for var in ssh ts uv; do
-  for segm in north south east west; do
-    obc_file=rtofs.${type}${hour}_${var}_obc_${segm}.nc
-    ncks ${obc_file} ocean_${var}_obc_${segm}.nc
+#for var in ssh ts uv; do
+#  for segm in north south east west; do
+#    obc_file=rtofs.${type}${hour}_${var}_obc_${segm}.nc
+#    ncks ${obc_file} ocean_${var}_obc_${segm}.nc
   # ncap2 -O -s "time=time+$((${NHRS}/24 + 1))" ${obc_file} ${obc_file}
   # ncrcat --record_append ${obc_file} ocean_${var}_obc_${segm}.nc
     # Deliver to intercom
-    ${NCP} -p ocean_${var}_obc_${segm}.nc ${WORKhafs}/intercom/ocn_prep/mom6/
-  done
-done
+#    ${NCP} -p ocean_${var}_obc_${segm}.nc ${WORKhafs}/intercom/ocn_prep/mom6/
+#  done
+#done
 
 #==============================================================================
 

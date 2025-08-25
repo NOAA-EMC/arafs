@@ -23,6 +23,7 @@ elif [ ${target} == "jet" ]; then
   FIXROOT=/lfs5/HFIP/hwrf-data/hafs-fix-files/hafs-${FIXversion}-fix/fix 
 elif [ ${target} == "gaeac6" ]; then
   FIXROOT=/gpfs/f6/drsa-hurr1/world-shared/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
+  FIXROOT2=/gpfs/f6/drsa-hurr1/world-shared/save/Bin.Li/fix
 elif [ ${target} == "ursa" ]; then
   FIXROOT=/scratch3/HFIP/hwrfv3/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 else
@@ -38,5 +39,7 @@ do
     rsync -av ${FIXROOT}/${subdir} ./
   fi
 done
+# for ar2 domain
+    cp -r ${FIXROOT2}/fix_mom6_ar2 ./fix_mom6_ar2
 
 echo 'done'
