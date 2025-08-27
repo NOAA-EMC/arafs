@@ -100,6 +100,12 @@ load(pathJoin("gsl", gsl_ver))
 nco_ver=os.getenv("nco_ver") or "5.0.6"
 load(pathJoin("nco", nco_ver))
 
+Core_ver=os.getenv("Core_ver") or "24.11"
+load(pathJoin("Core", Core_ver))
+
+ncl_ver=os.getenv("ncl_ver") or "6.6.2-omp"
+load(pathJoin("ncl", ncl_ver))
+
 cdo_ver=os.getenv("cdo_ver") or "2.2.0"
 load(pathJoin("cdo", cdo_ver))
 
