@@ -106,6 +106,9 @@ load(pathJoin("nco", nco_ver))
 cdo_ver=os.getenv("cdo_ver") or "2.2.0"
 load(pathJoin("cdo", cdo_ver))
 
+ncl_ver=os.getenv("ncl_ver") or "6.6.2"
+load(pathJoin("ncl", ncl_ver))
+
 mkl_ver=os.getenv("mkl_ver") or "2023.1.0"
 load(pathJoin("intel-oneapi-mkl", mkl_ver))
 
