@@ -186,8 +186,8 @@ ncl < regrid_uv_no_stagger.ncl
 #    output:ocean_uv_stagger_ar2_regular_grid.nc, u((depth, lath, lonq), v(depth, latq, lonh)
 python stagger_uv_from_ts_points.py lon_lat_ar2_regular_grid.nc ocean_uv_no_stagger_ar2_regular_grid.nc ocean_uv_ic.nc
 # add Time
-ncks -A -C -v time tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
-ncks -A -C -v Date tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
+#ncks -A -C -v time tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
+#ncks -A -C -v Date tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
 
 # Set values on the land grids to zero, and deal with first column/row
 #ncap2 -s 'where(u>100.0) u=0.0' -s 'where(v>100.0) v=0.0' \
