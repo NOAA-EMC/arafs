@@ -361,8 +361,8 @@ SURFACE_HEIGHT_IC_FILE = "ocean_ssh_ic.nc" !
                                 ! The initial condition file for the surface height.
 SURFACE_HEIGHT_IC_VAR = "ave_ssh"   ! default = "SSH"
                                 ! The initial condition variable for the surface height
-!VELOCITY_CONFIG = "file"
-!VELOCITY_FILE = "ocean_uv_ic.nc"
+VELOCITY_CONFIG = "file"
+VELOCITY_FILE = "ocean_uv_ic.nc"
 
 ! === module MOM_diag_mediator ===
 NUM_DIAG_COORDS = 2             ! default = 1

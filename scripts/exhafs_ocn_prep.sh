@@ -126,9 +126,13 @@ ncrename -d .Latitude,lath -d .Longitude,lonh -d MT,time \
 if [ ${ocean_domain} == "ar2" ]; then
   ${NCP} ${FIXhafs}/fix_mom6_${ocean_domain}/map_rtofs_to_ar2_regular.nc .
   ${NCP} ${FIXhafs}/fix_mom6_${ocean_domain}/lon_lat_ar2_regular_grid.nc .
-  mv ${outnc_2d} tmp_${outnc_2d}
-# get ocean_ssh_ic.nc
   cp ${USHhafs}/ncl/regrid_ssh.ncl .
+  cp ${USHhafs}/ncl/regrid_ts.ncl .
+  cp ${USHhafs}/ncl/regrid_uv_no_stagger.ncl .
+  cp ${USHhafs}/stagger_uv_from_ts_points.py .
+# process ssh
+# get ocean_ssh_ic.nc
+  mv ${outnc_2d} tmp_${outnc_2d}
   ncl <  regrid_ssh.ncl
   ncks  -A -C -v Date tmp_${outnc_2d} ${outnc_2d}
   ncks  -A -C -v time tmp_${outnc_2d} ${outnc_2d}
@@ -154,7 +158,6 @@ ncrename -d Depth,depth -d .Latitude,lath -d .Longitude,lonh -d MT,time \
 if [ ${ocean_domain} == "ar2" ]; then
   mv ${outnc_ts} tmp_${outnc_ts}
 # get ocean_ts_ic.nc
-  cp ${USHhafs}/ncl/regrid_ts.ncl .
   ncl <  regrid_ts.ncl
   ncks  -A -C -v Date tmp_${outnc_ts} ${outnc_ts}
   ncks  -A -C -v time tmp_${outnc_ts} ${outnc_ts}
@@ -166,62 +169,37 @@ fi
 ncks -O -4 ${outnc_ts} ${outnc_ts}
 
 # UV file
-ncrename -d .Latitude,lath -d .Longitude,lonh -d MT,Time \
-         -v .Latitude,lath -v .Longitude,lonh -v MT,Time \
-         rtofs_${outnc_uv} mom6_layer_1.nc
-ncrename -v Depth,Layer mom6_layer_1.nc mom6_layer_${outnc_uv}\
+ncrename -d .Latitude,lath -d .Longitude,lonh \
+         -v .Latitude,lath -v .Longitude,lonh \
+         rtofs_${outnc_uv} rtofs_uv_ic.nc
 
-${NCP} -p mom6_layer_${outnc_uv} hycom_3d.nc
-
-# This method requires to have a MOM.res.nc file for the specific domain as a
-# template. If we follow this procedure, probably we should have a MOM.res.nc
-# template in the fix MOM6 files
-#${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./
-#${NCP} ${FIXhafs}/fix_mom6/${ocean_domain}/MOM.res.nc ./MOM.res_ic.nc
-#nlonq=$(ncks --trd -m MOM.res.nc | grep -E -i ": lonq, size =" | cut -f 7 -d ' ' | uniq)
-#nlatq=$(ncks --trd -m MOM.res.nc | grep -E -i ": latq, size =" | cut -f 7 -d ' ' | uniq)
-#ncks -O -F -d latq,2,${nlatq} -d lonq,2,${nlonq} MOM.res_ic.nc MOM.res.nc
-#ncks -O -F -v u -d lonq,1,1 MOM.res_ic.nc tmp1_u.nc
-#ncks -O -F -v v -d latq,1,1 MOM.res_ic.nc tmp1_v.nc
-
-# Convert into double precision
-#ncap2 -O -s "lonh=lonh*1.0" -s "lath=lath*1.0" -s "Layer=Layer*1.0" -s "u=u*1.0" -s "v=v*1.0" hycom_3d.nc hycom_3d.nc
-
-# Extract u and v
-#ncks -O -v lonh, u hycom_3d.nc tmp2_u.nc
-#ncks -O -v lath,v hycom_3d.nc tmp2_v.nc
-
-#ncrename -O -d .lonh,lonq -v .lonh,lonq tmp2_u.nc tmp2_u.nc
-#ncrename -O -d .lath,latq -v .lath,latq tmp2_v.nc tmp2_v.nc
-
-#ncks -A -C -v lonq MOM.res.nc tmp2_u.nc
-#ncks -A -C -v latq MOM.res.nc tmp2_v.nc
-
-#ncpdq -O -a lonq,lath,Layer,Time tmp1_u.nc tmp1_u.nc
-#ncpdq -O -a lonq,lath,Layer,Time tmp2_u.nc tmp2_u.nc
-
-#ncpdq -O -a latq,lonh,Layer,Time tmp1_v.nc tmp1_v.nc
-#ncpdq -O -a latq,lonh,Layer,Time tmp2_v.nc tmp2_v.nc
-
-# Consider speeding up these two ncrcat steps in the future
-#ncrcat -O tmp1_u.nc tmp2_u.nc tmp_u.nc
-#ncrcat -O tmp1_v.nc tmp2_v.nc tmp_v.nc
-
-#ncpdq -O -a Time,Layer,lath,lonq tmp_u.nc tmp_u.nc
-#ncpdq -O -a Time,Layer,latq,lonh tmp_v.nc tmp_v.nc
-
-#ncks -A -C -v Time,Layer,lath,lonq,u tmp_u.nc tmp_uv.nc
-#ncks -A -C -v Time,Layer,latq,lonh,v tmp_v.nc tmp_uv.nc
+#  Interpolate rotated u and v to tracer points
+#    onto MOM6 regular grid
+# input: rtofs_uv_ic.nc, u(MT,Depth,lath,lonh)
+# output: ocean_uv_no_stagger_ar2_regular_grid.nc, u(time,depth,latitude,longitude)
+ncl < regrid_uv_no_stagger.ncl
+#
+# Average velocities on u and v points in order to
+#    stagger them
+#    input: lon_lat_ar2_regular_grid.nc, ocean_uv_no_stagger_ar2_regular_grid.nc
+#    u(time, depth, latitude, longitude)
+#    output:ocean_uv_stagger_ar2_regular_grid.nc, u((depth, lath, lonq), v(depth, latq, lonh)
+python stagger_uv_from_ts_points.py lon_lat_ar2_regular_grid.nc ocean_uv_no_stagger_ar2_regular_grid.nc ocean_uv_ic.nc
+# add Time
+ncks -A -C -v time tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
+ncks -A -C -v Date tmp_ocean_ssh_ic.nc ocean_uv_ic.nc
 
 # Set values on the land grids to zero, and deal with first column/row
 #ncap2 -s 'where(u>100.0) u=0.0' -s 'where(v>100.0) v=0.0' \
 #      -s 'u=u;u(:,:,:,0)=u(:,:,:,1)' -s 'v=v;v(:,:,0,:)=v(:,:,1,:)' \
 #      tmp_uv.nc ${outnc_uv}
+#ncap2 -s 'where(u>100.0) u=0.0' -s 'where(v>100.0) v=0.0' \
+#      ocean_uv_stagger_ar2_regular_grid.nc  ${outnc_uv}
 
 # Deliver to intercom
 ${NCP} -p ${outnc_2d} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_ic.nc
 ${NCP} -p ${outnc_ts} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_ic.nc
-#${NCP} -p ${outnc_uv} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc
+${NCP} -p ${outnc_uv} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc
 
 #==============================================================================
 

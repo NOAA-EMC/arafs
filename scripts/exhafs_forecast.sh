@@ -1371,7 +1371,7 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
   # Ocean IC and OBC
   ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_ic.nc INPUT/ocean_ssh_ic.nc
   ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ts_ic.nc INPUT/ocean_ts_ic.nc
-#  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc INPUT/ocean_uv_ic.nc
+  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_uv_ic.nc INPUT/ocean_uv_ic.nc
 #  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_east.nc INPUT/ocean_ssh_obc_east.nc
 #  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_north.nc INPUT/ocean_ssh_obc_north.nc
 #  ${NLN} ${WORKhafs}/intercom/ocn_prep/mom6/ocean_ssh_obc_south.nc INPUT/ocean_ssh_obc_south.nc
