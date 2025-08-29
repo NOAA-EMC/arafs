@@ -7,9 +7,9 @@
 # History:
 #   05/13/2023: Added the script for MOM6 coulping in HAFS workflow
 # Usage:
-#   ./hafs_mom6_obc_from_rtofs.py inputdir outputdir ssh_file_in ts_file_in \
-#     uv_file_in lon_name_in lat_name_in hgrid_out_file \
-#     lon_name_hgrid_out lat_name_hgrid_out
+#    ./hafs_mom6_obc_from_rtofs.py ssh_file_in ts_file_in uv_file_in \
+#      lon_name_in lat_name_in \
+#      hgrid_out_file lon_name_hgrid_out lat_name_hgrid_out
 ################################################################################
 import sys
 import argparse
@@ -32,31 +32,18 @@ if __name__ == "__main__":
     # get command line args
     parser = argparse.ArgumentParser(
         description="Generates the open boundary conditions for MOM6 from the RTOFS netcdf files")
-    parser.add_argument('inputdir', type=str, help="Location of rtofs output converted to netcdf files")
-    parser.add_argument('outputdir', type=str, help="Location where the generated obc files will reside")
     parser.add_argument('ssh_file_in', type=str, help="Name of the file that contains the RTOFS sea surface height")
     parser.add_argument('ts_file_in', type=str, help="Name of the file that contains the RTOFS temperature and salinity field")
     parser.add_argument('uv_file_in', type=str, help="Name of the file that contains the RTOFS u and v velocity fields")
-    parser.add_argument('lon_name_in', type=str, help="Name of the longitude variable in the RTOFS netcdf files")
-    parser.add_argument('lat_name_in', type=str, help="Name of the latitude variable in the RTOFS netcdf files")
     parser.add_argument('hgrid_out_file', type=str, help="Name of the MOM6 super grid file, e,g. ocean_hgrid.nc")
-    parser.add_argument('lon_name_hgrid_out', type=str, help="Name of the longitude variable in the MOM6 super grid file")
-    parser.add_argument('lat_name_hgrid_out', type=str, help="Name of the latitude variable in the MOM6 super grid file")
 
     args = parser.parse_args()
-
-    inputdir = args.inputdir
-    outputdir = args.outputdir
 
     ssh_file_in = args.ssh_file_in
     ts_file_in = args.ts_file_in
     uv_file_in = args.uv_file_in
-    lon_name_in = args.lon_name_in
-    lat_name_in = args.lat_name_in
 
     hgrid_out_file = args.hgrid_out_file
-    lon_name_hgrid_out = args.lon_name_hgrid_out
-    lat_name_hgrid_out = args.lat_name_hgrid_out
 
     print(args)
 
@@ -100,55 +87,55 @@ if __name__ == "__main__":
 
     #################################################################
     # Finding regridding weights
-    interp_t2s_south_weight = temp_south.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'])
+    interp_t2s_south_weight = temp_south.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'])
 
-    interp_t2s_north_weight = temp_north.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'])
+    interp_t2s_north_weight = temp_north.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'])
 
-    interp_t2s_east_weight = temp_east.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'])
+    interp_t2s_east_weight = temp_east.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'])
 
-    interp_t2s_west_weight = temp_west.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'])
+    interp_t2s_west_weight = temp_west.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'])
 
-    interp_u2s_south_weight, interp_v2s_south_weight = vel_south.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'])
+    interp_u2s_south_weight, interp_v2s_south_weight = vel_south.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'])
 
-    interp_u2s_north_weight, interp_v2s_north_weight = vel_north.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'])
+    interp_u2s_north_weight, interp_v2s_north_weight = vel_north.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'])
 
-    interp_u2s_east_weight, interp_v2s_east_weight = vel_east.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'])
+    interp_u2s_east_weight, interp_v2s_east_weight = vel_east.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'])
 
-    interp_u2s_west_weight, interp_v2s_west_weight = vel_west.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'])
+    interp_u2s_west_weight, interp_v2s_west_weight = vel_west.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'])
 
     #################################################################
     # Regridding
-    temp_south.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_south_weight)
+    temp_south.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_south_weight)
 
-    temp_north.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_north_weight)
+    temp_north.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_north_weight)
 
-    temp_east.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_east_weight)
+    temp_east.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_east_weight)
 
-    temp_west.interpolate_from(ts_file_in,'pot_temp',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_west_weight)
+    temp_west.interpolate_from(ts_file_in,'temp',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_west_weight)
 
-    salt_south.interpolate_from(ts_file_in,'salinity',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_south_weight)
+    salt_south.interpolate_from(ts_file_in,'salt',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_south_weight)
 
-    salt_north.interpolate_from(ts_file_in,'salinity',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_north_weight)
+    salt_north.interpolate_from(ts_file_in,'salt',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_north_weight)
 
-    salt_east.interpolate_from(ts_file_in,'salinity',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_east_weight)
+    salt_east.interpolate_from(ts_file_in,'salt',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_east_weight)
 
-    salt_west.interpolate_from(ts_file_in,'salinity',frame=0,from_global=False,depthname='Depth',timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_west_weight)
+    salt_west.interpolate_from(ts_file_in,'salt',frame=0,from_global=False,depthname='depth',timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_west_weight)
 
-    ssh_south.interpolate_from(ssh_file_in,'ssh',frame=0,timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_south_weight)
+    ssh_south.interpolate_from(ssh_file_in,'ssh',frame=0,timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_south_weight)
 
-    ssh_north.interpolate_from(ssh_file_in,'ssh',frame=0,timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_north_weight)
+    ssh_north.interpolate_from(ssh_file_in,'ssh',frame=0,timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_north_weight)
 
-    ssh_east.interpolate_from(ssh_file_in,'ssh',frame=0,timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_east_weight)
+    ssh_east.interpolate_from(ssh_file_in,'ssh',frame=0,timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_east_weight)
 
-    ssh_west.interpolate_from(ssh_file_in,'ssh',frame=0,timename='MT',coord_names=['Longitude','Latitude'],interpolator=interp_t2s_west_weight)
+    ssh_west.interpolate_from(ssh_file_in,'ssh',frame=0,timename='time',coord_names=['longitude','latitude'],interpolator=interp_t2s_west_weight)
 
-    vel_south.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'],interpolator_u=interp_u2s_south_weight,interpolator_v=interp_v2s_south_weight)
+    vel_south.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'],interpolator_u=interp_u2s_south_weight,interpolator_v=interp_v2s_south_weight)
 
-    vel_north.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'],interpolator_u=interp_u2s_north_weight,interpolator_v=interp_v2s_north_weight)
+    vel_north.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'],interpolator_u=interp_u2s_north_weight,interpolator_v=interp_v2s_north_weight)
 
-    vel_east.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'],interpolator_u=interp_u2s_east_weight,interpolator_v=interp_v2s_east_weight)
+    vel_east.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'],interpolator_u=interp_u2s_east_weight,interpolator_v=interp_v2s_east_weight)
 
-    vel_west.interpolate_from(uv_file_in,'u','v',frame=0,depthname='Depth',timename='MT',coord_names_u=['Longitude','Latitude'],coord_names_v=['Longitude','Latitude'],interpolator_u=interp_u2s_west_weight,interpolator_v=interp_v2s_west_weight)
+    vel_west.interpolate_from(uv_file_in,'u','v',frame=0,depthname='depth',timename='time',coord_names_u=['longitude','latitude'],coord_names_v=['longitude','latitude'],interpolator_u=interp_u2s_west_weight,interpolator_v=interp_v2s_west_weight)
 
     ##############################################
     # Writing obc for temp and salinity to netcdf files
@@ -169,7 +156,7 @@ if __name__ == "__main__":
 
     #----------- time --------------------------------------------
     time = temp_south.timesrc
-    time.calendar = nc.Dataset(ts_file_in)['MT'].calendar
+    time.calendar = nc.Dataset(ts_file_in)['time'].calendar
 
     # ---------- write to file -----------------------------------
     fileout_south = ts_file_in.split('_')[0]+'_ts_obc_south.nc'
@@ -201,7 +188,7 @@ if __name__ == "__main__":
 
     #----------- time --------------------------------------------
     time = temp_south.timesrc
-    time.calendar = nc.Dataset(ssh_file_in)['MT'].calendar
+    time.calendar = nc.Dataset(ssh_file_in)['time'].calendar
 
     # ---------- write to file -----------------------------------
     fileout_south = ssh_file_in.split('_')[0]+'_ssh_obc_south.nc'
@@ -233,7 +220,7 @@ if __name__ == "__main__":
 
     #----------- time --------------------------------------------
     time = vel_south.timesrc
-    time.calendar = nc.Dataset(uv_file_in)['MT'].calendar
+    time.calendar = nc.Dataset(uv_file_in)['time'].calendar
 
     # ---------- write to file -----------------------------------
     fileout_south = uv_file_in.split('_')[0]+'_uv_obc_south.nc'

@@ -42,28 +42,31 @@ begin
 ;----------------------------------------------------------------------
     Opt = True
 ; rtofs file
-    fname="tmp_ocean_ts_ic.nc"
+    fname="rtofs_ocean_ts_ic.nc"
     ff   = addfile(fname,"r")
 ; ar2 regular grid
     ff2  = addfile("lon_lat_ar2_regular_grid.nc","r")
     lonh = ff2->lonh
     lath = ff2->lath
-    var12 = new((/55,875,1625/),"float")
-    var13 = new((/55,875,1625/),"float")
+    var12 = new((/1,55,875,1625/),"float")
+    var13 = new((/1,55,875,1625/),"float")
     do k = 0,54
-    var = ff->Temp(0,k,:,:)
+    var = ff->pot_temp(0,k,:,:)
     temp_regrid = ESMF_regrid_with_weights(var,wgtFile,Opt)
-    var12(k,:,:)=temp_regrid
+    var12(0,k,:,:)=temp_regrid
     end do
-    delete(temp_regrid)
+    ;delete(0,temp_regrid)
 
     do k = 0,54
-    var = ff->Salt(0,k,:,:)
-    temp_regrid = ESMF_regrid_with_weights(var,wgtFile,Opt)
-    var13(k,:,:)=temp_regrid
+    var = ff->salinity(0,k,:,:)
+    salt_regrid = ESMF_regrid_with_weights(var,wgtFile,Opt)
+    var13(0,k,:,:)=salt_regrid
     end do
 
-    depth = ff->depth
+;   printVarSummary(temp_regrid)
+    time = ff->MT
+    time_units = time@units
+    depth = ff->Depth
 
 ;----------------------------------------------------------------------
 ;     Write the regridded data to a NetCDF file
@@ -74,19 +77,23 @@ begin
       fout = addfile(rgrdFileName,"c")
 
       setfileoption(fout,"DefineMode",True)
-      dimNames = (/"depth","latitude","longitude"/)
-      dimSizes = (/55,875,1625/)
-      dimUnlim = (/False,False,False/)
+      dimNames = (/"time","depth","latitude","longitude"/)
+      dimSizes = (/1,55,875,1625/)
+      dimUnlim = (/True,False,False,False/)
       filedimdef(fout,dimNames,dimSizes,dimUnlim)
+      filevardef(fout,"time",typeof(time),(/"time"/))
       filevardef(fout,"depth",typeof(depth),(/"depth"/))
-      filevardef(fout,"Temp",typeof(var12),(/"depth","latitude","longitude"/))
-      filevardef(fout,"Salt",typeof(var13),(/"depth","latitude","longitude"/))
+      filevardef(fout,"temp",typeof(var12),(/"time","depth","latitude","longitude"/))
+      filevardef(fout,"salt",typeof(var13),(/"time","depth","latitude","longitude"/))
       filevardef(fout,"longitude",typeof(lonh),(/"longitude"/))
       filevardef(fout,"latitude", typeof(lath),(/"latitude"/))
       setfileoption(fout,"DefineMode",False)
-      fout->longitude   = (/lonh/)
-      fout->latitude   = (/lath/)
+      fout->time       = (/time/)
+      fout->time@units = time_units
+      fout->time@calendar = "gregorian"
       fout->depth      = (/depth/)
-      fout->Temp       = (/var12/)
-      fout->Salt       = (/var13/)
+      fout->longitude  = (/lonh/)
+      fout->latitude   = (/lath/)
+      fout->temp       = (/var12/)
+      fout->salt       = (/var13/)
 end
